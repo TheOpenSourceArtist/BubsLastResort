@@ -5,12 +5,17 @@ class Red(GameState):
     def __init__(self):
         super().__init__()
         self.title = 'Red'
+        self.tileTest: TileSet = TileSet("smileSet.bmp",[32,32])
         
         return
     #end __init__
 
     def render(self, surface):
         surface.fill((255,0,0))
+        surface.blit(self.tileTest.tiles[0],(0,0))
+        surface.blit(self.tileTest.tiles[1],(32,0))
+        surface.blit(self.tileTest.tiles[2],(0,32))
+        surface.blit(self.tileTest.tiles[3],(32,32))
         
         return
     #end render
