@@ -6,6 +6,7 @@ class Red(GameState):
         super().__init__()
         self.title = 'Red'
         self.tileTest: TileSet = TileSet("smileSet.bmp",[32,32])
+        self.animationTest: Animation = Animation("smileSet.bmp",[32,32])
         
         return
     #end __init__
@@ -16,9 +17,16 @@ class Red(GameState):
         surface.blit(self.tileTest.tiles[1],(32,0))
         surface.blit(self.tileTest.tiles[2],(0,32))
         surface.blit(self.tileTest.tiles[3],(32,32))
+        self.animationTest.render(surface,(0,100))
         
         return
     #end render
+
+    def update(self) -> None:
+        self.animationTest.update()
+        
+        return
+    #end update
 
     def enter(self):
         pg.display.set_caption(self.title)
@@ -74,8 +82,8 @@ class TestGame(Game):
         super().__init__('Test Game')
         self.gameStates = {
             'red': Red()
-            ,'green': Green()
-            ,'blue': Blue()
+            #,'green': Green()
+            #,'blue': Blue()
         }
         self.activeState = self.gameStates['red']
         self.activeState.enter()
@@ -93,7 +101,7 @@ class TestGame(Game):
 
         if self.curStateTick - self.lastStateTick >= self.stateDelay:
             self.activeState.exit()
-            self.activeState = self.gameStates[choice(['red','green','blue'])]
+            self.activeState = self.gameStates[choice(['red','red','red'])]
             self.activeState.enter()
             self.lastStateTick = self.curStateTick
         #end if

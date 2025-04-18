@@ -7,7 +7,10 @@
 
     Author: Thomas Richardson
     Date: 2025-04-17
-    Version: 0.1.0
+    Version: 0.3.0
+    Change Log:
+        Version 0.2.0 - Added TileSet
+        Version 0.3.0 - Added Animation
 """
 
 #-------------------------------------------------------------------------------
@@ -22,6 +25,8 @@ import pygame as pg
 
 class GameObject:
     def __init__(self) -> None:
+        self.active = True
+        self.visible = True
 
         return
     #end __init__
@@ -232,6 +237,7 @@ class TileSet(GameObject):
             int((self.master.get_width() / self.tileSize[0]))
             ,int((self.master.get_height() / self.tileSize[1]))
         ]
+        self.totalNumTiles: int = self.numTiles[0] * self.numTiles[1]
         
         self.tiles: list[Surface] = [
             self.master.subsurface(
@@ -242,12 +248,74 @@ class TileSet(GameObject):
                     ,self.tileSize[1]
                 )
             )
-            for i in range(self.numTiles[0] * self.numTiles[1])
+            for i in range(self.totalNumTiles)
         ]
         
         return
     #end __init__
 #end TileSet
+
+class Animation(TileSet):
+    def __init__(self, tileSetImage, tileSize) -> None:
+        #initialize as the parent class
+        super().__init__(tileSetImage, tileSize)
+
+        #set up timings for rendering frames
+        self.currentFrame: int = 0
+        self.frameDelays: list[int] = [
+            200 for i in range(self.numTiles[0] * self.numTiles[1])
+        ]
+        self.currentFrameTick: int = 0
+        self.lastFrameTick: int = 0
+        
+        return
+    #end __init__
+
+    def update(self) -> None:
+        if self.active:
+            self.currentFrameTick = pg.time.get_ticks()
+            frameDelay: int = self.currentFrameTick - self.lastFrameTick
+
+            if frameDelay >= self.frameDelays[self.currentFrame]:
+                self.currentFrame += 1
+                self.lastFrameTick = self.currentFrameTick
+
+                if self.currentFrame >= self.totalNumTiles:
+                    self.currentFrame = 0
+                #end if
+            #end if
+        #end if
+
+        return
+    #end update
+
+    def render(self,surface,position) -> None:
+        if self.visible:
+            surface.blit(self.tiles[self.currentFrame],position)
+        #end if
+        
+        return
+    #end render
+
+    def pause(self) -> None:
+        self.active = False
+
+        return
+    #end pause
+
+    def play(self) -> None:
+        self.active = True
+
+        return
+    #end play
+
+    def stop(self) -> None:
+        self.currentFrame = 0
+        self.active = False
+
+        return
+    #end stop
+#end Animation
 
 #-------------------------------------------------------------------------------
 #   Function Definitions
