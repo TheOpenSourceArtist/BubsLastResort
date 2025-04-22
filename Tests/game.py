@@ -7,6 +7,7 @@ class Red(GameState):
         self.title = 'Red'
         self.tileTest: TileSet = TileSet("smileSet.bmp",[32,32])
         self.animationTest: Animation = Animation("smileSet.bmp",[32,32])
+        self.animationTest.frameDelays = [500,50,50,500]
         
         return
     #end __init__

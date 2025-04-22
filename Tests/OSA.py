@@ -242,8 +242,8 @@ class TileSet(GameObject):
         self.tiles: list[Surface] = [
             self.master.subsurface(
                 pg.Rect(
-                    self.tileSize[0] * int(i / self.numTiles[0])
-                    ,self.tileSize[1] * (i % self.numTiles[1])
+                    self.tileSize[0] * int(i % self.numTiles[0])
+                    ,self.tileSize[1] * int(i / self.numTiles[1])
                     ,self.tileSize[0]
                     ,self.tileSize[1]
                 )
