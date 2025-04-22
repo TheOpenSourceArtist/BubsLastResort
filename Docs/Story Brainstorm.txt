@@ -71,48 +71,54 @@
 		-> • All the guys team up for a final boss battle against the Djin
 		 - You have to complete each guys dreamworld to unlock them for the battle
 
+-------------------------------------------------------------------------------
+	8 Questions Describing Our Game
+-------------------------------------------------------------------------------
 
-Describing Our Game: 
-1. What can we call our game? 
+1. What is your inspiration? 
+	- General platoforming games
+	- 90's era platformers 
+	- Super Mario World 
+
+2. What can we call our game? 
 	- Bub Quest 
 	- Game of Bubs 
 	- Breakfast at Bubs 
 	- Four Guys Bubs 
 	- * Bubs Last Resort *
 
-2. How does it start? 
+3. How does it start? 
+	- The guys go to breakfast at Bubs Breakfast Cafe (Low rent Waffle House setting).
 
-	The guys go to breakfast at Bubs Breakfast Cafe (Low rent Waffle House setting).
+4. Game board levels or just level select? 
+	* Game board option is intriguing *
 
-3. Game board levels or just level select? 
-	Game board option is intriguing 
-
-4. What quirks would make the game more fun to play? 
+5. What quirks would make the game more fun to play? 
 	- Rhythm based gameplay (Danny)
 	- Different drum sounds based on character movement (Danny) 
 	- Dynamic skill based gameplay (Berns) 
 	- Rage meter (Berns) (AKA Turning red and/or transforming) 
 	- Hacking (Thomas)
 	- Puzzle solving in the dreamworld (Thomas) 
-	- Combo Ability (AKA Street Fighter combo input prompts) (Garret)
-	- Buster Sword bridge (Garret) 
+	- Combo Ability (AKA Street Fighter combo input prompts for Ryus'Hadouken reference) (Garret)
+	- Long Sword bridge (Reference to Pyramid Heads' Great Knife) (Garret) 
 	- Trophy ability (Speed running gameplay) (Daniel) 
 	- Dynamic Skill based (Too good, it gets harder) (Daniel) 
 
-5. Can we mix and match characters? 
+6. Can we mix and match characters? 
 	- Yes, could help elaborate on overall gameplay and replayability 
 	- Ex. Danny playing Thomas's level or vice versa 
 
-6. What are the bosses at the end of each level? 
+7. What are the bosses at the end of each level? 
 	- Fears or flaws 
 	- Negative aspect?
 	- Evil version of ones self
 
-7. How does the game end (How do we escape)? 
+8. How does the game end (How do we escape)? 
 	- Beating a level (All levels)
 
 
-• Thomas Sucks
+• Thomas Rocks :D
 	
 
 
