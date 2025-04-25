@@ -11,6 +11,7 @@
     Change Log:
         Version 0.2.0 - Added TileSet
         Version 0.3.0 - Added Animation
+        Version 0.3.1 - Added active and visible bools to GameState
 """
 
 #-------------------------------------------------------------------------------
@@ -44,6 +45,8 @@ class GameObject:
 
 class GameState:
     def __init__(self) -> None:
+        self.active = True
+        self.visible = True
 
         return
     #end __init__
@@ -128,7 +131,9 @@ class Game:
 
         #run the render method on the active game state
         if isinstance(self.activeState,GameState):
-            self.activeState.render(self.renderBuffer)
+            if self.activeState.visible:
+                self.activeState.render(self.renderBuffer)
+            #end if
         #end if
 
         #blit the scaled render buffer to the display
@@ -145,7 +150,9 @@ class Game:
     def update(self) -> None:
         #run the update method on the active game state
         if isinstance(self.activeState,GameState):
-            self.activeState.update()
+            if self.activeState.active:
+                self.activeState.update()
+            #end if
         #end if
 
         return
