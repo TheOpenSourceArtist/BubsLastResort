@@ -30,6 +30,7 @@ class Red(GameState):
     #end update
 
     def enter(self):
+        super().enter()
         pg.display.set_caption(self.title)
         
         return
@@ -51,6 +52,7 @@ class Green(GameState):
     #end render
 
     def enter(self):
+        super().enter()
         pg.display.set_caption(self.title)
         
         return
@@ -72,6 +74,7 @@ class Blue(GameState):
     #end render
 
     def enter(self):
+        super().enter()
         pg.display.set_caption(self.title)
         
         return
@@ -83,8 +86,8 @@ class TestGame(Game):
         super().__init__('Test Game')
         self.gameStates = {
             'red': Red()
-            #,'green': Green()
-            #,'blue': Blue()
+            ,'green': Green()
+            ,'blue': Blue()
         }
         self.activeState = self.gameStates['red']
         self.activeState.enter()
@@ -102,7 +105,7 @@ class TestGame(Game):
 
         if self.curStateTick - self.lastStateTick >= self.stateDelay:
             self.activeState.exit()
-            self.activeState = self.gameStates[choice(['red','red','red'])]
+            self.activeState = self.gameStates[choice(['red','green','blue'])]
             self.activeState.enter()
             self.lastStateTick = self.curStateTick
         #end if

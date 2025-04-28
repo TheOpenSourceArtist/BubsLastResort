@@ -44,9 +44,10 @@ class GameObject:
 #end GameObject
 
 class GameState:
-    def __init__(self) -> None:
-        self.active = True
-        self.visible = True
+    def __init__(self, title = '') -> None:
+        self.active: bool = True
+        self.visible: bool = True
+        self.title: str = ''
 
         return
     #end __init__
@@ -77,11 +78,15 @@ class GameState:
     #end mixAudio
 
     def enter(self) -> None:
+        self.active = True
+        self.visible = True
 
         return
     #end enter
 
     def exit(self) -> None:
+        self.active = False
+        self.visible = False
 
         return
     #end exit
@@ -119,8 +124,8 @@ class Game:
         self.running: bool = True
 
         #set up game states
-        self.gameStates: dict(GameState) = dict(gameStates)
-        self.activeState: GameState = None
+        self.gameStates: dict(GameState) = {'':GameState()}
+        self.activeState: GameState = self.gameStates['']
 
         return
     #end __init__
@@ -226,6 +231,7 @@ class Game:
     #end run
 
     def quit(self) -> None:
+        self.activeState.exit()
         pg.quit()
 
         return
