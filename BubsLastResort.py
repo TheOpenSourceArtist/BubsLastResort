@@ -51,12 +51,18 @@ class IntroState(GameState):
 class TitleState(GameState):
     def __init__(self):
         super().__init__()
+        self.background: Surface = pg.image.load(
+            "gfx/gfxBackgroundTitle.bmp"
+        )
 
         return
     #end __init__
 
     def render(self, surface):
-        surface.fill((0,128,255))
+        width: int = surface.get_width()
+        height: int = surface.get_height()
+        
+        pg.transform.scale(self.background,(width,height),surface)
         
         return
     #end render
