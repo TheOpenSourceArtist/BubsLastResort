@@ -1,6 +1,15 @@
 from OSA import *
 from random import choice
 
+class Button(GameObject):
+    def __init__(self):
+        super().__init__()
+        self.states = {'initial'}
+
+        return
+    #end __init__
+#end Button
+
 class Red(GameState):
     def __init__(self):
         super().__init__()
@@ -101,14 +110,14 @@ class TestGame(Game):
     def update(self):
         super().update()
         
-        self.curStateTick = pg.time.get_ticks()
-
-        if self.curStateTick - self.lastStateTick >= self.stateDelay:
-            self.activeState.exit()
-            self.activeState = self.gameStates[choice(['red','green','blue'])]
-            self.activeState.enter()
-            self.lastStateTick = self.curStateTick
-        #end if
+##        self.curStateTick = pg.time.get_ticks()
+##
+##        if self.curStateTick - self.lastStateTick >= self.stateDelay:
+##            self.activeState.exit()
+##            self.activeState = self.gameStates[choice(['red','green','blue'])]
+##            self.activeState.enter()
+##            self.lastStateTick = self.curStateTick
+##        #end if
 
         return
     #end update
