@@ -18,6 +18,7 @@ class Sprite (GameObject):
 
         self.image = pg.surface.Surface(spriteSize)
         self.image.blit(self.masterImg,(0,0))
+        self.image.set_colorkey((255,0,255))
 
         return
 
@@ -26,17 +27,31 @@ class Sprite (GameObject):
 
         return
 
+    def update(self) -> None:
+        self.rect.center += self.velocity
+
+        return
+    #end update
+
 class TestState(GameState):
     def __init__(self):
         super().__init__()
-        self.testSprite = Sprite(None, [30,20])
+        self.testSprite = Sprite('gfx/gfxSpriteNinjaCornRat.bmp', [80,63])
+        self.testSprite.velocity = pg.math.Vector2.from_polar((3,0))
 
         return
 
     def render(self, surface):
+        surface.fill((50,50,200))
         self.testSprite.render(surface)
 
         return
+
+    def update(self):
+        self.testSprite.update()
+        
+        return
+    #end update
 
 game = Game()
 game.gameStates['Test'] = TestState()
