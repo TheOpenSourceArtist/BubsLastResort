@@ -21,6 +21,12 @@
 import pygame as pg
 
 #-------------------------------------------------------------------------------
+#   Global Variables
+#-------------------------------------------------------------------------------
+
+COLOR_TRANSPARENT: list[int,int,int] = [255,0,255]
+
+#-------------------------------------------------------------------------------
 #   Class Definitions
 #-------------------------------------------------------------------------------
 
@@ -239,43 +245,34 @@ class Game:
 #end Game
 
 class TileSet(GameObject):
-    def __init__(self, tileSetImage, tileSize) -> None:
+    def __init__(self, tileSetImage, tileSize, colorKey = COLOR_TRANSPARENT) -> None:
         #initialize as the parent class
         super().__init__()
 
         #load the tileSetImage
         self.tileSize: list[int] = tileSize
+        self.colorKey : list [int,int,int] = colorKey
         self.master: Surface = pg.image.load(tileSetImage)
-        self.numTiles: list[int] = [
-            int((self.master.get_width() / self.tileSize[0]))
-            ,int((self.master.get_height() / self.tileSize[1]))
-        ]
-        self.totalNumTiles: int = self.numTiles[0] * self.numTiles[1]
-
-        if self.numTiles[1] > 1:
-            self.tiles: list[Surface] = [
-                self.master.subsurface(
-                    pg.Rect(
-                        self.tileSize[0] * int(i % self.numTiles[0])
-                        ,self.tileSize[1] * int(i / self.numTiles[1])
-                        ,self.tileSize[0]
-                        ,self.tileSize[1]
+        self.master.set_colorkey(colorKey)
+        
+        #split master tile image into tiles
+        self.numTiles: int = 0
+        self.tiles: list[Surface] = list()
+        
+        for tileY in range(0,self.master.get_height(),self.tileSize[1]):
+            for tileX in range(0,self.master.get_width(),self.tileSize[0]):
+                try:
+                    self.tiles.append(
+                        self.master.subsurface(
+                            pg.Rect(tileX,tileY,self.tileSize[0],self.tileSize[1])    
+                        )
                     )
-                )
-                for i in range(self.totalNumTiles)
-            ]
-        else:
-            self.tiles: list[Surface] = [
-                self.master.subsurface(
-                    pg.Rect(
-                        self.tileSize[0] * int(i % self.numTiles[0])
-                        ,self.tileSize[1] * 0
-                        ,self.tileSize[0]
-                        ,self.tileSize[1]
-                    )
-                )
-                for i in range(self.totalNumTiles)
-            ]
+                    self.numTiles += 1
+                except:
+                    print("Could not load tile.")
+                #end try
+            #end for
+        #end for
         
         return
     #end __init__
@@ -289,7 +286,7 @@ class Animation(TileSet):
         #set up timings for rendering frames
         self.currentFrame: int = 0
         self.frameDelays: list[int] = [
-            200 for i in range(self.numTiles[0] * self.numTiles[1])
+            200 for i in range(self.numTiles)
         ]
         self.currentFrameTick: int = 0
         self.lastFrameTick: int = 0
@@ -306,7 +303,7 @@ class Animation(TileSet):
                 self.currentFrame += 1
                 self.lastFrameTick = self.currentFrameTick
 
-                if self.currentFrame >= self.totalNumTiles:
+                if self.currentFrame >= self.numTiles:
                     self.currentFrame = 0
                 #end if
             #end if
