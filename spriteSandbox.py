@@ -39,6 +39,9 @@ class TestState(GameState):
         self.testSprite = Sprite('gfx/gfxSpriteNinjaCornRat.bmp', [80,63])
         self.testSprite.velocity = pg.math.Vector2.from_polar((3,0))
         self.anim = Animation('gfx/animSpriteNinjaCornRat.bmp',[80,63])
+        self.animCheetah = Animation('gfx/animCheetahRanger.bmp',[58,100])
+##        self.animCheetah.frameDelays[0] = 500
+##        self.animCheetah.frameDelays[1] = 50
 
         return
 
@@ -46,12 +49,14 @@ class TestState(GameState):
         surface.fill((50,50,200))
         self.testSprite.render(surface)
         self.anim.render(surface,(100,100))
+        self.animCheetah.render(surface,(300,300))
 
         return
 
     def update(self):
         self.testSprite.update()
         self.anim.update()
+        self.animCheetah.update()
         
         return
     #end update

@@ -251,18 +251,31 @@ class TileSet(GameObject):
             ,int((self.master.get_height() / self.tileSize[1]))
         ]
         self.totalNumTiles: int = self.numTiles[0] * self.numTiles[1]
-        
-        self.tiles: list[Surface] = [
-            self.master.subsurface(
-                pg.Rect(
-                    self.tileSize[0] * int(i % self.numTiles[0])
-                    ,self.tileSize[1] * int(i / self.numTiles[1])
-                    ,self.tileSize[0]
-                    ,self.tileSize[1]
+
+        if self.numTiles[1] > 1:
+            self.tiles: list[Surface] = [
+                self.master.subsurface(
+                    pg.Rect(
+                        self.tileSize[0] * int(i % self.numTiles[0])
+                        ,self.tileSize[1] * int(i / self.numTiles[1])
+                        ,self.tileSize[0]
+                        ,self.tileSize[1]
+                    )
                 )
-            )
-            for i in range(self.totalNumTiles)
-        ]
+                for i in range(self.totalNumTiles)
+            ]
+        else:
+            self.tiles: list[Surface] = [
+                self.master.subsurface(
+                    pg.Rect(
+                        self.tileSize[0] * int(i % self.numTiles[0])
+                        ,self.tileSize[1] * 0
+                        ,self.tileSize[0]
+                        ,self.tileSize[1]
+                    )
+                )
+                for i in range(self.totalNumTiles)
+            ]
         
         return
     #end __init__
