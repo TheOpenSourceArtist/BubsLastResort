@@ -39,7 +39,7 @@ class TestState(GameState):
         self.testSprite = Sprite('gfx/gfxSpriteNinjaCornRat.bmp', [80,63])
         self.testSprite.velocity = pg.math.Vector2.from_polar((3,0))
         self.anim = Animation('gfx/animSpriteNinjaCornRat.bmp',[80,63])
-        self.animCheetah = Animation('gfx/animCheetahRanger.bmp',[58,100])
+        self.animCheetah = Animation('gfx/animCheetahRangerWalk.bmp',[50,100])
 ##        self.animCheetah.frameDelays[0] = 500
 ##        self.animCheetah.frameDelays[1] = 50
 
