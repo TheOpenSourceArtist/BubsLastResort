@@ -363,7 +363,7 @@ class Animation(TileSet):
         return
     #end update
 
-    def render(self,surface,position) -> None:
+    def render(self,surface,position=[0,0]) -> None:
         if self.visible:
             surface.blit(self.tiles[self.currentFrame],position)
         #end if
