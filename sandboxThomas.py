@@ -3,6 +3,7 @@ from OSA import *
 class Thomas(Sprite):
     def __init__(self):
         super().__init__("gfx/gfxThomasStanding.bmp",[50,100])
+        self.image = pg.transform.scale(self.image,[125,250])
         
         return
     #end __inint__
@@ -10,7 +11,7 @@ class Thomas(Sprite):
 
 def main() -> None:
     #create a new game
-    game: Game = Game("Thomas Sandbox",[1200,900],[800,600])
+    game: Game = Game("Thomas Sandbox",[800,600],[800,600])
     game.gameStates[''].bgColor = [50,125,250]
     
     #initialize game objects
