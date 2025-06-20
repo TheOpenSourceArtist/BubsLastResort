@@ -4,7 +4,8 @@ class TestState(GameState):
     def __init__(self):
         super().__init__()
         #self.testSprite = Sprite('gfx/gfxSpriteNinjaCornRat.bmp', [80,63])
-        self.testSprite = Sprite('gfx/gfxThomasStanding.bmp', [50,100])
+        self.testSprite = Animation('gfx/animThomasWalk.bmp', [100,200])
+        self.testSprite.frameDelays = [50 for x in self.testSprite.frameDelays]
         self.testSprite.velocity = pg.math.Vector2.from_polar((3,0))
         self.anim = Animation('gfx/animSpriteNinjaCornRat.bmp',[80,63])
         self.animCheetah = Animation('gfx/animCheetahRangerWalk.bmp',[50,100])
@@ -22,12 +23,20 @@ class TestState(GameState):
         return
 
     def update(self):
-        #self.testSprite.update()
+        self.testSprite.update()
         self.anim.update()
         self.animCheetah.update()
         
         return
     #end update
+
+    def handleInputs(self,keyboard,mousebutton,mousepos):
+        if(keyboard[pg.K_SPACE]):
+            self.testSprite.frameDelays = [20 for x in self.testSprite.frameDelays]
+        else:
+            self.testSprite.frameDelays = [200 for x in self.testSprite.frameDelays]
+        return
+    #end
 
 game = Game()
 game.gameStates['Test'] = TestState()
