@@ -30,7 +30,7 @@ class TestState(GameState):
         return
     #end update
 
-    def handleInputs(self,keyboard,mousebutton,mousepos):
+    def handleKeyboard(self,keyboard):
         if(keyboard[pg.K_SPACE]):
             self.testSprite.frameDelays = [20 for x in self.testSprite.frameDelays]
         else:

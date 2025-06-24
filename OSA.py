@@ -85,10 +85,20 @@ class GameState:
         return
     #end update
 
-    def handleInputs(self, keyboard, mouse, mousePos) -> None:
+    def handleKeyboard(self, keyboard) -> None:
 
         return
-    #end handleInputs
+    #end handleKeyboard
+
+    def handleMouseButtons(self, mouseButtons) -> None:
+
+        return
+    #end handleMouseButtons
+
+    def handleMousePos(self, mousePos) -> None:
+
+        return
+    #end handleMouseButtons
 
     def handleBounds(self, bounds) -> None:
 
@@ -210,8 +220,14 @@ class Game:
 
         #call the handleInputs method on the active Game State
         if isinstance(self.activeState,GameState):
-            self.activeState.handleInputs(
-                self.keyboard,self.mouseButton,self.mousePos
+            self.activeState.handleKeyboard(
+                self.keyboard
+            )
+            self.activeState.handleMouseButtons(
+                self.mouseButton
+            )
+            self.activeState.handleMousePos(
+                self.mousePos
             )
         #end if
         
