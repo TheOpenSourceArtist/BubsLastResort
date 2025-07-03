@@ -8,7 +8,9 @@ class TestState(GameState):
         self.testSprite.frameDelays = [50 for x in self.testSprite.frameDelays]
         self.testSprite.velocity = pg.math.Vector2.from_polar((3,0))
         self.anim = Animation('gfx/animSpriteNinjaCornRat.bmp',[80,63])
+        self.anim.rect.topleft = [100,100]
         self.animCheetah = Animation('gfx/animCheetahRangerWalk.bmp',[50,100])
+        self.animCheetah.rect.topleft = [300,300]
 ##        self.animCheetah.frameDelays[0] = 500
 ##        self.animCheetah.frameDelays[1] = 50
 
@@ -17,8 +19,8 @@ class TestState(GameState):
     def render(self, surface):
         surface.fill((50,50,200))
         self.testSprite.render(surface)
-        self.anim.render(surface,(100,100))
-        self.animCheetah.render(surface,(300,300))
+        self.anim.render(surface)
+        self.animCheetah.render(surface)
 
         return
 

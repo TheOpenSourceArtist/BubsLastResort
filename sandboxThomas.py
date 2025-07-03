@@ -1,40 +1,82 @@
 from OSA import *
 
-class Thomas(Sprite):
+class Thomas(Animation):
     def __init__(self):
-        super().__init__("gfx/gfxThomasStanding.bmp",[100,200])
-        self.bounds = None
-        self.ddy = 2
-        self.dy = 0
+        super().__init__('gfx/animThomasWalk.bmp',[100,200])
+        self.acceleration: pg.math.Vector2 = pg.math.Vector2(0,1)
+        self.velocity: pg.math.Vector2 = pg.math.Vector2(0,0)
+        self.jumpReady: bool = True
+        self.jumpAcceleration: float = 5
+        self.maxJumpSpeed: float = 20
+        self.moveSpeed: float = 4
         
         return
     #end __init__
     
-    def update(self):
-        self.dy += self.ddy
-        self.rect.y += self.dy
+    def update(self) -> None:
+        super().update()
+        
+        self.velocity += self.acceleration
+        self.rect.center += self.velocity
         
         return
     #end update
 #end Thomas
     
 class Sandbox(GameState):
-    def __init__(self):
-        super().__init__("Sandbox")
-        self.bgColor = [50,125,250]
-        self.gameObjects.append(Sprite('gfx/bgTest.bmp',[800,600]))
-        self.gameObjects.append(Thomas())
+    def __init__(self, game: Game) -> None:
+        super().__init__('Sandbox')
+        self.renderSize: list[int] = game.renderSize
+        self.displaySize: lit[int] = game.displaySize
+        self.renderScale: list[float] = game.renderScale
+        self.thomas: Thomas = Thomas()
+        self.bgColor: list[int] = [120,210,220]
+        
+        game.gameStates['sandbox'] = self
+        game.activeState = game.gameStates['sandbox']
+        self.enter()
         
         return
     #end __init
     
-    def handleBounds(self,bounds):
-        for obj in self.gameObjects:
-            if obj.rect.bottom >= bounds[1]:
-                obj.rect.bottom = bounds[1]
+    def handleKeyboard(self, keyboard: list[bool]) -> None:
+        if keyboard[pg.K_SPACE] and self.thomas.jumpReady:
+            self.thomas.velocity.y += -self.thomas.jumpAcceleration
+            
+            if self.thomas.velocity.y <= -self.thomas.maxJumpSpeed:
+                self.thomas.jumpReady = False
+            #end if
+        #end if
+                
+        if keyboard[pg.K_RIGHT]:
+            self.thomas.velocity.x = self.thomas.moveSpeed
+        elif keyboard[pg.K_LEFT]:
+            self.thomas.velocity.x = -self.thomas.moveSpeed
+        else:
+            self.thomas.velocity.x = 0
+        #end if
         
         return
-    #end handleBounds
+    #end handleKeyboard
+    
+    def update(self) -> None:
+        self.thomas.update()
+        
+        if self.thomas.rect.bottom >= self.renderSize[1]:
+            self.thomas.velocity.y = 0
+            self.thomas.rect.bottom = self.renderSize[1]
+            self.thomas.jumpReady = True
+        #end if
+        
+        return
+    #end update
+    
+    def render(self, renderBuffer) -> None:
+        renderBuffer.fill(self.bgColor)
+        self.thomas.render(renderBuffer)
+        
+        return
+    #end render
 #end Sandbox
 
 def main() -> None:
@@ -42,8 +84,7 @@ def main() -> None:
     game: Game = Game("Thomas Sandbox",[800,600],[800,600])
     
     #initialize game objects
-    game.gameStates['Sandbox'] = Sandbox()
-    game.activeState = game.gameStates['Sandbox']
+    sandbox: Sandbox = Sandbox(game)
     
     #run the game
     game.run()

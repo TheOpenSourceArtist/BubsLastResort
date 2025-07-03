@@ -289,7 +289,8 @@ class Sprite (GameObject):
         if imgPath == None:
             self.masterImg = pg.surface.Surface(spriteSize)
             self.masterImg.fill([255,0,0])
-
+        elif isinstance(imgPath,pg.surface.Surface):
+            self.masterImg = imgPath
         else:
             self.masterImg = pg.image.load(imgPath)
 
@@ -345,10 +346,32 @@ class TileSet(GameObject):
     #end __init__
 #end TileSet
 
-class Animation(TileSet):
-    def __init__(self, tileSetImage, tileSize) -> None:
-        #initialize as the parent class
-        super().__init__(tileSetImage, tileSize)
+class Animation(Sprite):
+    def __init__(self, tileSetImage, tileSize, colorKey = COLOR_TRANSPARENT) -> None:        
+        #load the tileSetImage
+        self.tileSize: list[int] = tileSize
+        self.colorKey : list [int,int,int] = colorKey
+        self.master: Surface = pg.image.load(tileSetImage)
+        self.master.set_colorkey(colorKey)
+        
+        #split master tile image into tiles
+        self.numTiles: int = 0
+        self.tiles: list[Surface] = list()
+        
+        for tileY in range(0,self.master.get_height(),self.tileSize[1]):
+            for tileX in range(0,self.master.get_width(),self.tileSize[0]):
+                try:
+                    self.tiles.append(
+                        self.master.subsurface(
+                            pg.Rect(tileX,tileY,self.tileSize[0],self.tileSize[1])    
+                        )
+                    )
+                    self.numTiles += 1
+                except:
+                    print("Could not load tile.")
+                #end try
+            #end for
+        #end for
 
         #set up timings for rendering frames
         self.currentFrame: int = 0
@@ -357,6 +380,9 @@ class Animation(TileSet):
         ]
         self.currentFrameTick: int = 0
         self.lastFrameTick: int = 0
+        
+        #initialize as the parent class
+        super().__init__(self.tiles[self.currentFrame], tileSize)
         
         return
     #end __init__
@@ -379,9 +405,9 @@ class Animation(TileSet):
         return
     #end update
 
-    def render(self,surface,position=[0,0]) -> None:
+    def render(self,surface) -> None:
         if self.visible:
-            surface.blit(self.tiles[self.currentFrame],position)
+            surface.blit(self.tiles[self.currentFrame],self.rect)
         #end if
         
         return
