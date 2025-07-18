@@ -9,6 +9,7 @@ class Thomas(Animation):
         self.jumpAcceleration: float = 5
         self.maxJumpSpeed: float = 20
         self.moveSpeed: float = 4
+        self.flipped: bool = False
         
         return
     #end __init__
@@ -21,6 +22,14 @@ class Thomas(Animation):
         
         return
     #end update
+    
+    def render(self, renderBuffer: pg.surface.Surface) -> None:
+        temp:pg.surface.Surface = pg.transform.flip(self.tiles[self.currentFrame],self.flipped,False)
+        temp.set_colorkey(COLOR_TRANSPARENT)
+        renderBuffer.blit(temp,self.rect)
+        
+        return
+    #end render
 #end Thomas
     
 class Sandbox(GameState):
@@ -50,8 +59,10 @@ class Sandbox(GameState):
                 
         if keyboard[pg.K_RIGHT]:
             self.thomas.velocity.x = self.thomas.moveSpeed
+            self.thomas.flipped = False
         elif keyboard[pg.K_LEFT]:
             self.thomas.velocity.x = -self.thomas.moveSpeed
+            self.thomas.flipped = True
         else:
             self.thomas.velocity.x = 0
         #end if
