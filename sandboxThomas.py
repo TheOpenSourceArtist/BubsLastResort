@@ -10,7 +10,7 @@ class Thomas(Animation):
         self.moveSpeed: float = 5
         self.flipped: bool = False
         self.lastVel: pg.math.Vector2 = pg.math.Vector2(0,0)
-        self.jumpMaxHeight: int = 69
+        self.jumpMaxHeight: int = 60
         self.jumpStartHeight: int = 0
         
         
