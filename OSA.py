@@ -388,6 +388,8 @@ class Animation(Sprite):
     #end __init__
 
     def update(self) -> None:
+        super().update()
+        
         if self.active:
             self.currentFrameTick = pg.time.get_ticks()
             frameDelay: int = self.currentFrameTick - self.lastFrameTick

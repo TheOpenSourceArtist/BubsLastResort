@@ -3,22 +3,24 @@ from OSA import *
 class Thomas(Animation):
     def __init__(self):
         super().__init__('gfx/animThomasWalk.bmp',[100,200])
-        self.acceleration: pg.math.Vector2 = pg.math.Vector2(0,1)
+        self.acceleration: pg.math.Vector2 = pg.math.Vector2(0,3)
         self.velocity: pg.math.Vector2 = pg.math.Vector2(0,0)
         self.jumpReady: bool = True
-        self.jumpAcceleration: float = 5
-        self.maxJumpSpeed: float = 20
-        self.moveSpeed: float = 4
+        self.jumpAcceleration: float = self.acceleration.y * 4
+        self.moveSpeed: float = 5
         self.flipped: bool = False
+        self.lastVel: pg.math.Vector2 = pg.math.Vector2(0,0)
+        self.jumpMaxHeight: int = 69
+        self.jumpStartHeight: int = 0
+        
         
         return
     #end __init__
     
     def update(self) -> None:
-        super().update()
-        
+        self.lastVel = self.velocity
         self.velocity += self.acceleration
-        self.rect.center += self.velocity
+        super().update()
         
         return
     #end update
@@ -49,14 +51,23 @@ class Sandbox(GameState):
     #end __init
     
     def handleKeyboard(self, keyboard: list[bool]) -> None:
-        if keyboard[pg.K_SPACE] and self.thomas.jumpReady:
-            self.thomas.velocity.y += -self.thomas.jumpAcceleration
+        if keyboard[pg.K_SPACE]:
+            if self.thomas.velocity.y == 0 and self.thomas.lastVel.y == 0 and self.thomas.jumpReady:
+                self.thomas.jumpStartHeight = self.thomas.rect.bottom
             
-            if self.thomas.velocity.y <= -self.thomas.maxJumpSpeed:
+            if (self.thomas.jumpStartHeight - self.thomas.rect.bottom) < self.thomas.jumpMaxHeight:
+                if self.thomas.jumpReady:
+                    self.thomas.velocity.y += -self.thomas.jumpAcceleration
+            else:
                 self.thomas.jumpReady = False
-            #end if
-        #end if
+        else:
+            self.thomas.jumpReady = False
+            
+            if self.thomas.velocity.y == 0 and self.thomas.lastVel.y == 0:
+                self.thomas.jumpReady = True
+                self.thomas.velocity.y = 0
                 
+            
         if keyboard[pg.K_RIGHT]:
             self.thomas.velocity.x = self.thomas.moveSpeed
             self.thomas.flipped = False
@@ -76,7 +87,6 @@ class Sandbox(GameState):
         if self.thomas.rect.bottom >= self.renderSize[1]:
             self.thomas.velocity.y = 0
             self.thomas.rect.bottom = self.renderSize[1]
-            self.thomas.jumpReady = True
         #end if
         
         return
