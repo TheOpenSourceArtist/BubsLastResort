@@ -12,6 +12,7 @@ class Thomas(Animation):
         self.lastVel: pg.math.Vector2 = pg.math.Vector2(0,0)
         self.jumpMaxHeight: int = 60
         self.jumpStartHeight: int = 0
+        self.frameDelays = [100 for x in self.frameDelays]
         
         
         return
@@ -42,6 +43,7 @@ class Sandbox(GameState):
         self.renderScale: list[float] = game.renderScale
         self.thomas: Thomas = Thomas()
         self.bgColor: list[int] = [120,210,220]
+        self.bg = Sprite("gfx/testBG.bmp",[800,600])
         
         game.gameStates['sandbox'] = self
         game.activeState = game.gameStates['sandbox']
@@ -84,9 +86,9 @@ class Sandbox(GameState):
     def update(self) -> None:
         self.thomas.update()
         
-        if self.thomas.rect.bottom >= self.renderSize[1]:
+        if self.thomas.rect.bottom >= self.renderSize[1] - 150:
             self.thomas.velocity.y = 0
-            self.thomas.rect.bottom = self.renderSize[1]
+            self.thomas.rect.bottom = self.renderSize[1] - 150
         #end if
         
         return
@@ -94,6 +96,7 @@ class Sandbox(GameState):
     
     def render(self, renderBuffer) -> None:
         renderBuffer.fill(self.bgColor)
+        self.bg.render(renderBuffer)
         self.thomas.render(renderBuffer)
         
         return
