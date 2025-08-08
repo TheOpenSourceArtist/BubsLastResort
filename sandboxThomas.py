@@ -1,5 +1,27 @@
 from OSA import *
 
+class Platform:
+    def __init__(self, size: list[int] = [100,25]) -> None:
+        self.rect: pg.Rect = pg.Rect([0,0],size)
+        self.img: pg.surface.Surface = pg.surface.Surface(size)
+        self.color: list[int] = [255,0,0]
+        self.img.fill(self.color)
+
+        return
+    #end end
+
+    def collide(self, other: Sprite) -> bool:
+
+        return self.rect.colliderect(other.rect)
+    #end collide
+
+    def render(self, surface: pg.surface.Surface) -> None:
+        surface.blit(self.img,self.rect)
+
+        return
+    #end render
+#end Platform
+
 class Thomas(Animation):
     def __init__(self):
         super().__init__('gfx/animThomasWalk.bmp',[100,200])
@@ -44,6 +66,8 @@ class Sandbox(GameState):
         self.thomas: Thomas = Thomas()
         self.bgColor: list[int] = [120,210,220]
         self.bg = Sprite("gfx/testBG.bmp",[800,600])
+        self.platform: Platform = Platform([200,20])
+        self.platform.rect.center = [x / 2 for x in self.renderSize]
         
         game.gameStates['sandbox'] = self
         game.activeState = game.gameStates['sandbox']
@@ -85,6 +109,12 @@ class Sandbox(GameState):
     
     def update(self) -> None:
         self.thomas.update()
+        if self.platform.collide(self.thomas):
+            if self.thomas.rect.left < self.platform.rect.right and self.thomas.rect.right > self.platform.rect.left:
+                self.thomas.rect.bottom = self.platform.rect.top
+                self.thomas.jumpReady = True
+                self.thomas.velocity.y = 0
+                self.thomas.lastVel.y = 0
         
         if self.thomas.rect.bottom >= self.renderSize[1] - 150:
             self.thomas.velocity.y = 0
@@ -98,6 +128,7 @@ class Sandbox(GameState):
         renderBuffer.fill(self.bgColor)
         self.bg.render(renderBuffer)
         self.thomas.render(renderBuffer)
+        self.platform.render(renderBuffer)
         
         return
     #end render
