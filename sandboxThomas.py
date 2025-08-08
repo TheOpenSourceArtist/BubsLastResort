@@ -3,6 +3,7 @@ from OSA import *
 class Platform:
     def __init__(self, size: list[int] = [100,25]) -> None:
         self.rect: pg.Rect = pg.Rect([0,0],size)
+        self.velocity: pg.math.Vector2 = pg.math.Vector2(0,0)
         self.img: pg.surface.Surface = pg.surface.Surface(size)
         self.color: list[int] = [255,0,0]
         self.img.fill(self.color)
@@ -20,33 +21,27 @@ class Platform:
 
         return
     #end render
+    
+    def update(self) -> None:
+        self.rect.center += self.velocity
+        
+        return
+    #end update
 #end Platform
 
-class Thomas(Animation):
+class Thomas(Entity):
     def __init__(self):
         super().__init__('gfx/animThomasWalk.bmp',[100,200])
-        self.acceleration: pg.math.Vector2 = pg.math.Vector2(0,3)
-        self.velocity: pg.math.Vector2 = pg.math.Vector2(0,0)
-        self.jumpReady: bool = True
-        self.jumpAcceleration: float = self.acceleration.y * 4
-        self.moveSpeed: float = 5
-        self.flipped: bool = False
-        self.lastVel: pg.math.Vector2 = pg.math.Vector2(0,0)
-        self.jumpMaxHeight: int = 60
-        self.jumpStartHeight: int = 0
-        self.frameDelays = [100 for x in self.frameDelays]
-        
+        self.flipped: bool = False        
         
         return
     #end __init__
     
-    def update(self) -> None:
-        self.lastVel = self.velocity
-        self.velocity += self.acceleration
-        super().update()
-        
-        return
-    #end update
+#     def update(self) -> None:
+#         super().update()
+#         
+#         return
+#     #end update
     
     def render(self, renderBuffer: pg.surface.Surface) -> None:
         temp:pg.surface.Surface = pg.transform.flip(self.tiles[self.currentFrame],self.flipped,False)
@@ -68,6 +63,9 @@ class Sandbox(GameState):
         self.bg = Sprite("gfx/testBG.bmp",[800,600])
         self.platform: Platform = Platform([200,20])
         self.platform.rect.center = [x / 2 for x in self.renderSize]
+        self.floor: Platform = Platform([game.renderSize[0],25])
+        self.floor.rect.bottom = game.renderSize[1]
+        self.floor.velocity.y = -5
         
         game.gameStates['sandbox'] = self
         game.activeState = game.gameStates['sandbox']
@@ -76,24 +74,7 @@ class Sandbox(GameState):
         return
     #end __init
     
-    def handleKeyboard(self, keyboard: list[bool]) -> None:
-        if keyboard[pg.K_SPACE]:
-            if self.thomas.velocity.y == 0 and self.thomas.lastVel.y == 0 and self.thomas.jumpReady:
-                self.thomas.jumpStartHeight = self.thomas.rect.bottom
-            
-            if (self.thomas.jumpStartHeight - self.thomas.rect.bottom) < self.thomas.jumpMaxHeight:
-                if self.thomas.jumpReady:
-                    self.thomas.velocity.y += -self.thomas.jumpAcceleration
-            else:
-                self.thomas.jumpReady = False
-        else:
-            self.thomas.jumpReady = False
-            
-            if self.thomas.velocity.y == 0 and self.thomas.lastVel.y == 0:
-                self.thomas.jumpReady = True
-                self.thomas.velocity.y = 0
-                
-            
+    def handleKeyboard(self, keyboard: list[bool]) -> None:          
         if keyboard[pg.K_RIGHT]:
             self.thomas.velocity.x = self.thomas.moveSpeed
             self.thomas.flipped = False
@@ -103,22 +84,33 @@ class Sandbox(GameState):
         else:
             self.thomas.velocity.x = 0
         #end if
+            
+        self.thomas.jump(keyboard[pg.K_SPACE])
         
         return
     #end handleKeyboard
     
     def update(self) -> None:
-        self.thomas.update()
-        if self.platform.collide(self.thomas):
-            if self.thomas.rect.left < self.platform.rect.right and self.thomas.rect.right > self.platform.rect.left:
-                self.thomas.rect.bottom = self.platform.rect.top
-                self.thomas.jumpReady = True
-                self.thomas.velocity.y = 0
-                self.thomas.lastVel.y = 0
+        self.floor.update()
         
-        if self.thomas.rect.bottom >= self.renderSize[1] - 150:
-            self.thomas.velocity.y = 0
-            self.thomas.rect.bottom = self.renderSize[1] - 150
+        if self.floor.rect.top <= 0:
+            self.floor.velocity.y *= -1
+        elif self.floor.rect.bottom >= self.renderSize[1]:
+            self.floor.velocity.y *= -1
+            
+        self.thomas.update()
+        
+        if self.floor.rect.colliderect(self.thomas.rect):
+            self.thomas.rect.bottom = self.floor.rect.top
+            if self.thomas.jumpState == JUMPSTATE_FREEFALL:
+                self.thomas.jumpState = JUMPSTATE_GROUNDED
+        elif self.platform.rect.colliderect(self.thomas.rect):
+            self.thomas.rect.bottom = self.platform.rect.top
+            if self.thomas.jumpState == JUMPSTATE_FREEFALL:
+                self.thomas.jumpState = JUMPSTATE_GROUNDED
+        else:
+            if self.thomas.jumpState == JUMPSTATE_GROUNDED:
+                self.thomas.jumpState = JUMPSTATE_FREEFALL
         #end if
         
         return
@@ -127,6 +119,7 @@ class Sandbox(GameState):
     def render(self, renderBuffer) -> None:
         renderBuffer.fill(self.bgColor)
         self.bg.render(renderBuffer)
+        self.floor.render(renderBuffer)
         self.thomas.render(renderBuffer)
         self.platform.render(renderBuffer)
         
