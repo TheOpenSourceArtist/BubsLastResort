@@ -7,11 +7,12 @@
 
     Author: Thomas Richardson
     Date: 2025-04-17
-    Version: 0.3.0
+    Version: 0.3.2
     Change Log:
         Version 0.2.0 - Added TileSet
         Version 0.3.0 - Added Animation
         Version 0.3.1 - Added active and visible bools to GameState
+        version 0.3.2 - Added Entity
 """
 
 #-------------------------------------------------------------------------------
@@ -24,7 +25,13 @@ import pygame as pg
 #   Global Variables
 #-------------------------------------------------------------------------------
 
+#colors
 COLOR_TRANSPARENT: list[int,int,int] = [255,0,255]
+
+#jump States
+JUMPSTATE_GROUNDED: int = 0
+JUMPSTATE_IMPULSE: int = 1
+JUMPSTATE_FREEFALL: int = 2
 
 #-------------------------------------------------------------------------------
 #   Class Definitions
@@ -388,6 +395,8 @@ class Animation(Sprite):
     #end __init__
 
     def update(self) -> None:
+        super().update()
+        
         if self.active:
             self.currentFrameTick = pg.time.get_ticks()
             frameDelay: int = self.currentFrameTick - self.lastFrameTick
@@ -432,6 +441,60 @@ class Animation(Sprite):
         return
     #end stop
 #end Animation
+    
+class Entity(Animation):
+    def __init__(self, file, size) -> None:
+        super().__init__(file,size)
+        self.acceleration: pg.math.Vector2 = pg.math.Vector2(0,0)
+        self.gravityAcceleration: float = pg.math.Vector2(0,4)
+        self.velocity: pg.math.Vector2 = pg.math.Vector2(0,0)
+        self.moveSpeed: float = 5
+        
+        self.jumpReady: bool = True
+        self.jumpMaxHeight: int = 60
+        self.jumpStartHeight: int = 0
+        self.jumpState: int = JUMPSTATE_FREEFALL
+        self.jumpAcceleration: float = pg.math.Vector2(0,-10)
+        
+        return
+    #end __init__
+    
+    def jump(self, impulse) -> None:
+        if self.jumpState == JUMPSTATE_GROUNDED:
+            self.velocity.y = 0
+            
+            if impulse and self.jumpReady:
+                self.jumpState = JUMPSTATE_IMPULSE
+                self.acceleration = self.gravityAcceleration + self.jumpAcceleration
+                self.jumpStartHeight = self.rect.bottom
+            elif not impulse and not self.jumpReady:
+                self.jumpReady = True
+            #end if
+        elif self.jumpState == JUMPSTATE_IMPULSE:
+            if self.jumpStartHeight - self.rect.bottom >= self.jumpMaxHeight:
+                self.jumpReady = False
+                
+            if impulse and self.jumpReady:
+                self.acceleration = self.gravityAcceleration + self.jumpAcceleration
+            elif not impulse or not self.jumpReady:
+                self.jumpReady = False
+                self.jumpState = JUMPSTATE_FREEFALL
+            #end if
+        elif self.jumpState == JUMPSTATE_FREEFALL:
+            self.acceleration = self.gravityAcceleration
+        #end if
+        
+        return
+    #end jump
+    
+    def update(self) -> None:
+        self.velocity += self.acceleration
+        self.rect.center += self.velocity
+        super().update()
+        
+        return
+    #end update
+#end Entity
 
 #-------------------------------------------------------------------------------
 #   Function Definitions
