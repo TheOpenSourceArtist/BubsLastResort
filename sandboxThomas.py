@@ -7,6 +7,7 @@ class Platform:
         self.img: pg.surface.Surface = pg.surface.Surface(size)
         self.color: list[int] = [255,0,0]
         self.img.fill(self.color)
+        self.state: int = 0
 
         return
     #end end
@@ -105,9 +106,24 @@ class Sandbox(GameState):
             if self.thomas.jumpState == JUMPSTATE_FREEFALL:
                 self.thomas.jumpState = JUMPSTATE_GROUNDED
         elif self.platform.rect.colliderect(self.thomas.rect):
-            self.thomas.rect.bottom = self.platform.rect.top
-            if self.thomas.jumpState == JUMPSTATE_FREEFALL:
-                self.thomas.jumpState = JUMPSTATE_GROUNDED
+            if self.platform.state == 0:
+                if self.thomas.rect.bottom <= self.platform.rect.top:
+                    self.platform.state = 1
+                #end if
+#             elif self.platform.state == 1:
+#                 if self.thomas.rect.bottom < self.platform.rect.top:
+#                     self.platform.state = 0
+#                 #end if
+            #end if
+            
+            if self.platform.state == 1:
+                self.thomas.rect.bottom = self.platform.rect.top
+                
+                if self.thomas.jumpState == JUMPSTATE_FREEFALL:
+                    self.thomas.jumpState = JUMPSTATE_GROUNDED
+                    self.platform.state = 0
+                #end if
+            #end if
         else:
             if self.thomas.jumpState == JUMPSTATE_GROUNDED:
                 self.thomas.jumpState = JUMPSTATE_FREEFALL
