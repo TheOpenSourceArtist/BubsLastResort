@@ -32,8 +32,9 @@ class Platform:
 
 class Thomas(Entity):
     def __init__(self):
-        super().__init__('gfx/animThomasWalk.bmp',[100,200])
-        self.flipped: bool = False        
+        super().__init__('gfx/animPaperDollRunning.bmp',[150,200])
+        self.flipped: bool = False
+        self.frameDelays = [35 for x in self.frameDelays]
         
         return
     #end __init__
@@ -92,7 +93,7 @@ class Sandbox(GameState):
     #end handleKeyboard
     
     def update(self) -> None:
-        self.floor.update()
+        #self.floor.update()
         
         if self.floor.rect.top <= 0:
             self.floor.velocity.y *= -1
